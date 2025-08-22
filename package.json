@@ -7,7 +7,10 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "generate": "node src/data/generateData.js"
+    "generate": "node src/data/generateData.js",
+    "pages:build": "npx @cloudflare/next-on-pages",
+    "preview": "npm run pages:build && wrangler pages dev",
+    "deploy": "npm run pages:build && wrangler pages deploy"
   },
   "dependencies": {
     "@atlaskit/pragmatic-drag-and-drop": "^1.5.2",
@@ -45,6 +48,7 @@
     "use-debounce": "^10.0.4"
   },
   "devDependencies": {
+    "@cloudflare/next-on-pages": "^1.13.14",
     "@tailwindcss/forms": "^0.5.10",
     "@types/node": "^22.13.14",
     "@types/react": "18.2.0",
