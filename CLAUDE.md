@@ -1,3 +1,7 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
 # Dashboard Project Specification
 
 ## Project Overview
@@ -168,13 +172,27 @@ Chart utilities provide predefined color schemes:
 - Interactive legends and hover effects
 - Grid lines and axis customization
 
-## Development Scripts
+## Development Commands
 
-- `npm run dev` - Start development server
-- `npm run build` - Build production application
-- `npm run start` - Start production server
-- `npm run lint` - Run ESLint
-- `npm run generate` - Generate sample data
+### Core Development
+- `pnpm install` - Install dependencies (project uses pnpm, not npm)
+- `pnpm run dev` - Start development server at http://localhost:3000
+- `pnpm run build` - Build production application
+- `pnpm run start` - Start production server
+- `pnpm run lint` - Run ESLint for code quality
+
+### Data Management
+- `pnpm run generate` - Generate sample data using `src/data/generateData.js`
+
+### Cloudflare Pages Deployment
+- `pnpm run pages:build` - Build for Cloudflare Pages using @cloudflare/next-on-pages
+- `pnpm run preview` - Preview Cloudflare Pages build locally
+- `pnpm run deploy` - Deploy to Cloudflare Pages
+
+### Key Configuration Files
+- `next.config.mjs` - Next.js configuration with Cloudflare edge runtime setup
+- `wrangler.jsonc` - Cloudflare Workers configuration
+- `pnpm-workspace.yaml` - pnpm workspace configuration
 
 ## Styling Guidelines
 
@@ -201,6 +219,47 @@ A specialized data visualization page featuring:
 - **CSV data loading** from `/public/data/history-price.csv`
 - **Responsive design** for all screen sizes
 
+## Architecture Patterns
+
+### Next.js App Router Structure
+The application uses Next.js 14 App Router with route groups:
+- **Root Layout** (`src/app/layout.tsx`) - Contains Sidebar and ThemeProvider
+- **Main Route Group** (`src/app/(main)/`) - Dashboard pages with shared layout
+- **Settings Route Group** (`src/app/settings/`) - Settings pages with separate layout
+- **Root Redirect** - `/` automatically redirects to `/overview`
+
+### Layout Hierarchy
+```
+RootLayout (sidebar + theme)
+├── (main)/layout.tsx (page padding wrapper)
+│   ├── overview/page.tsx
+│   ├── details/page.tsx  
+│   └── history/page.tsx
+└── settings/layout.tsx (settings-specific layout)
+    ├── general/page.tsx
+    ├── billing/page.tsx
+    └── users/page.tsx
+```
+
+### Component Architecture
+- **Base Components** (`src/components/`) - Reusable Tremor Raw components
+- **UI Components** (`src/components/ui/`) - Feature-specific components organized by domain:
+  - `navigation/` - Sidebar, UserProfile, etc.
+  - `data-table/` - Advanced table components with TanStack Table
+  - `overview/` - Dashboard-specific cards and widgets
+  - `settings/` - Settings-specific modals and forms
+
+### Data Layer
+- **Schema** (`src/data/schema.ts`) - TypeScript type definitions
+- **Static Data** (`src/data/data.ts`, `overview-data.ts`) - Sample data
+- **CSV Loading** (`public/data/`) - Historical data loaded client-side
+- **Data Generation** (`generateData.js`) - Script for creating sample datasets
+
+### Styling System
+- **Tremor Raw** - Core component library built on Radix UI primitives
+- **Chart Colors** (`src/lib/chartUtils.ts`) - Centralized color system with dark mode support
+- **Custom Animations** - Defined in `tailwind.config.ts` for smooth transitions
+
 ## Configuration Files
 
 ### Site Configuration
@@ -220,11 +279,10 @@ export const siteConfig = {
 }
 ```
 
-### Tailwind Configuration
-- Dark mode support with selector strategy
-- Custom animations and keyframes
-- Form plugin integration
-- Extended theme configuration
+### Runtime Configuration
+- **Edge Runtime** - Configured in `next.config.mjs` for Cloudflare Pages compatibility
+- **Dark Mode** - Uses `next-themes` with class-based strategy
+- **Font Optimization** - Inter font loaded via `next/font/google`
 
 ## Best Practices
 
