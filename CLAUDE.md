@@ -2,6 +2,29 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+# Important Development Guidelines
+
+## Package Management
+- **CRITICAL**: This project uses `pnpm`, not `npm`. All commands must use `pnpm`.
+- Dependencies are locked to specific versions for stability
+- The project uses `pnpm-workspace.yaml` for workspace configuration
+
+## Development Workflow
+- Always run `pnpm run lint` after making code changes
+- Use `pnpm run generate` to regenerate sample data when needed
+- The development server runs on http://localhost:3000 via `pnpm run dev`
+
+## Architecture Constraints
+- **Never create new files** unless absolutely necessary - always prefer editing existing files
+- Follow the existing component organization patterns in `src/components/ui/`
+- Maintain TypeScript strict typing throughout the codebase
+- Use existing utility functions from `src/lib/utils.ts` and `src/lib/chartUtils.ts`
+
+## Cloudflare Edge Runtime
+- The application uses edge runtime (`next.config.mjs`) for Cloudflare Pages compatibility
+- Build for Cloudflare using `pnpm run pages:build`
+- Preview builds locally with `pnpm run preview`
+
 # Dashboard Project Specification
 
 ## Project Overview
@@ -175,11 +198,11 @@ Chart utilities provide predefined color schemes:
 ## Development Commands
 
 ### Core Development
-- `pnpm install` - Install dependencies (project uses pnpm, not npm)
+- `pnpm install` - Install dependencies (CRITICAL: project uses pnpm, not npm)
 - `pnpm run dev` - Start development server at http://localhost:3000
 - `pnpm run build` - Build production application
 - `pnpm run start` - Start production server
-- `pnpm run lint` - Run ESLint for code quality
+- `pnpm run lint` - Run ESLint for code quality (run after code changes)
 
 ### Data Management
 - `pnpm run generate` - Generate sample data using `src/data/generateData.js`
@@ -242,12 +265,20 @@ RootLayout (sidebar + theme)
 ```
 
 ### Component Architecture
-- **Base Components** (`src/components/`) - Reusable Tremor Raw components
+- **Base Components** (`src/components/`) - Reusable Tremor Raw components (Button, Card, Input, etc.)
 - **UI Components** (`src/components/ui/`) - Feature-specific components organized by domain:
-  - `navigation/` - Sidebar, UserProfile, etc.
-  - `data-table/` - Advanced table components with TanStack Table
-  - `overview/` - Dashboard-specific cards and widgets
+  - `navigation/` - Sidebar, UserProfile, workspace dropdowns
+  - `data-table/` - Advanced table components with TanStack Table (filtering, pagination, row actions)
+  - `overview/` - Dashboard-specific cards and widgets (charts, progress bars, KPI cards)
   - `settings/` - Settings-specific modals and forms
+  - `icons/` - Custom animated icons
+
+### Key Architectural Patterns
+- **Sidebar Navigation**: Fixed sidebar (lg:pl-72) with mobile responsive drawer
+- **Theme System**: Uses `next-themes` with dark mode as primary aesthetic
+- **Route Groups**: `(main)` group for dashboard pages, separate `settings` group
+- **CSV Data Loading**: Historical data loaded from `/public/data/` directory client-side
+- **Chart System**: Centralized color utilities in `chartUtils.ts` with dark mode support
 
 ### Data Layer
 - **Schema** (`src/data/schema.ts`) - TypeScript type definitions
@@ -314,3 +345,9 @@ All dependencies are locked to specific versions for stability. Major libraries 
 - **Styling**: Tailwind CSS with custom configuration
 
 This specification provides a comprehensive overview of the dashboard project structure, features, and implementation details for development and maintenance purposes.
+
+# important-instruction-reminders
+Do what has been asked; nothing more, nothing less.
+NEVER create files unless they're absolutely necessary for achieving your goal.
+ALWAYS prefer editing an existing file to creating a new one.
+NEVER proactively create documentation files (*.md) or README files. Only create documentation files if explicitly requested by the User.
