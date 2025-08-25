@@ -111,7 +111,8 @@ export default function History() {
                 <CartesianGrid
                   strokeDasharray="1 1"
                   stroke="#374151"
-                  opacity={0.3}
+                  opacity={1}
+                  vertical={false}
                 />
                 <XAxis
                   dataKey="date"
@@ -126,7 +127,8 @@ export default function History() {
                   tick={{ fontSize: 11, fill: '#9CA3AF' }}
                   tickLine={false}
                   axisLine={false}
-                  domain={['dataMin - 10', 'dataMax + 10']}
+                  domain={[(dataMin: number) => Math.floor(dataMin / 10) * 10, (dataMax: number) => Math.ceil(dataMax / 10) * 10]}
+                  tickCount={10}
                 />
                 <YAxis
                   yAxisId="right"
@@ -134,7 +136,8 @@ export default function History() {
                   tick={{ fontSize: 11, fill: '#9CA3AF' }}
                   tickLine={false}
                   axisLine={false}
-                  domain={['dataMin', 'dataMax']}
+                  tickCount={10}
+                  domain={[(dataMin: number) => Math.floor(dataMin / 0.01) * 0.01, (dataMax: number) => Math.ceil(dataMax / 0.01) * 0.01]}
                   tickFormatter={(value) => Number(value).toFixed(2)}
                 />
                 <Tooltip
